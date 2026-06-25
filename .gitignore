@@ -1,0 +1,12 @@
+# Cache-busting duplicates (local dev only)
+app-v2.js
+data-v2.js
+styles-v2.css
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Editor directories
+.vscode/
+.idea/

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hallucination Hunter | Fact-Checking Arcade Game</title>
+  <!-- Google Fonts: Orbitron for cyber headers, Share Tech Mono for terminal readouts, Inter for claims -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <!-- Meta tags for SEO -->
+  <meta name="description" content="Engage in high-speed content verification in the digital war room. Catch hallucinations, fake stats, and misleading claims before they publish!">
+</head>
+<body>
+
+  <!-- Background Scanline effect for retro-arcade terminal feel -->
+  <div class="crt-scanlines"></div>
+  <div class="crt-vignette"></div>
+
+  <!-- Global Sound Control Button in top right -->
+  <div class="audio-control-container">
+    <button id="audio-toggle-btn" class="audio-btn muted" title="Toggle Sound (Mute by Default)" aria-label="Toggle Sound">
+      <!-- Mute Icon (Default) -->
+      <svg id="sound-off-icon" viewBox="0 0 24 24" width="24" height="24">
+        <path fill="currentColor" d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM12 4L9.91 6.09 12 8.18V4zm-7.91-.9L3 4.18l3.82 3.82L3 12h4l5 5v-4.18l4.73 4.73c-.64.49-1.36.89-2.16 1.15v2.05c1.35-.32 2.57-.99 3.59-1.89l2.66 2.66 1.08-1.08L4.09 3.1zM12 16.5l-2.6-2.6L12 16.5zM19 12c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.57 14.92 21 13.51 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71z"/>
+      </svg>
+      <!-- Sound On Icon (Hidden initially) -->
+      <svg id="sound-on-icon" viewBox="0 0 24 24" width="24" height="24" style="display: none;">
+        <path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+      </svg>
+    </button>
+  </div>
+
+  <main id="app-container">
+
+    <!-- ==========================================
+         A. START SCREEN
+         ========================================== -->
+    <section id="start-screen" class="screen-view active">
+      <div class="header-glitch-container">
+        <h1 class="logo-title" data-text="HALLUCINATION HUNTER">HALLUCINATION HUNTER</h1>
+        <p class="logo-subtitle">VERIFICATION WAR ROOM // INTAKE SCANNER</p>
+      </div>
+
+      <div class="terminal-card terminal-intro">
+        <div class="terminal-header">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+          <span class="terminal-title">AGENT_BREAKER_INSTRUCTIONS.TXT</span>
+        </div>
+        <div class="terminal-body">
+          <p class="terminal-text"><span class="highlight-cyan">&gt; WELCOME, DETECTIVE.</span> The news feeds are flooded with generated noise. Unverified claims, fake sources, and mathematical hallucinations are sneaking into the publishing pipeline.</p>
+          <p class="terminal-text"><span class="highlight-cyan">&gt; MISSION:</span> Classify each incoming statement card before the clock runs dry. Maintain public trust at all costs.</p>
+        </div>
+      </div>
+
+      <!-- Mode Selector -->
+      <div class="modes-grid">
+        <button class="mode-select-card active" data-mode="classic">
+          <div class="mode-icon">
+            <svg viewBox="0 0 24 24" width="32" height="32"><path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/></svg>
+          </div>
+          <h3>CLASSIC MODE</h3>
+          <p>20 calibrated rounds. Ramping difficulty. Maximize verification scores.</p>
+        </button>
+
+        <button class="mode-select-card" data-mode="survival">
+          <div class="mode-icon">
+            <svg viewBox="0 0 24 24" width="32" height="32"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          </div>
+          <h3>SURVIVAL MODE</h3>
+          <p>Infinite deck. Every mistake drains trust. Survive as long as you can.</p>
+        </button>
+
+        <button class="mode-select-card" data-mode="blitz">
+          <div class="mode-icon">
+            <svg viewBox="0 0 24 24" width="32" height="32"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
+          </div>
+          <h3>BLITZ MODE</h3>
+          <p>60-second limit. Rapid classification. No timer reset on answers.</p>
+        </button>
+      </div>
+
+      <div class="action-buttons-container">
+        <button id="start-game-btn" class="cyber-btn primary">LAUNCH SCANNERS</button>
+        <button id="open-rules-btn" class="cyber-btn secondary">VERIFICATION MANUAL</button>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         B. INSTRUCTIONS MANUAL OVERLAY
+         ========================================== -->
+    <div id="rules-overlay" class="overlay-modal">
+      <div class="modal-content">
+        <button class="close-modal-btn" id="close-rules-btn">&times;</button>
+        <h2 class="section-title">VERIFICATION HANDBOOK</h2>
+        
+        <div class="tab-nav">
+          <button class="tab-btn active" data-tab="tab-overview">Protocol</button>
+          <button class="tab-btn" data-tab="tab-hallucinations">Detection Codes</button>
+          <button class="tab-btn" data-tab="tab-controls">War Room HUD</button>
+        </div>
+
+        <div class="tab-body-container">
+          <!-- Overview Tab -->
+          <div id="tab-overview" class="tab-panel active">
+            <h3>OPERATION RULES</h3>
+            <p>You have seconds to analyze each card. Correct answers increase your verification points and extend your win streak. Incorrect classifications or running out of time triggers a <strong>Public Trust Penalty</strong>.</p>
+            <div class="handbook-tip">
+              <span class="tip-badge">CRITICAL</span>
+              <p>Do not search the web. Every statement contains internal logical inconsistencies, formatting flaws, or impossible parameters that allow it to be debunked via reasoning alone.</p>
+            </div>
+            <div class="trust-meter-preview">
+              <span>TRUST SYSTEM CAPACITY:</span>
+              <div class="meter-bar-preview"><div class="bar-fill-preview"></div></div>
+              <p>In Classic and Survival modes, zero trust leads to campaign termination.</p>
+            </div>
+          </div>
+
+          <!-- Hallucinations Tab -->
+          <div id="tab-hallucinations" class="tab-panel">
+            <h3>CONTENT CLASSIFICATION CODES</h3>
+            <p>Identify the exact defect. Choose from five possible report codes:</p>
+            <div class="hallucination-definitions">
+              <div class="def-row">
+                <span class="badge safe">Safe</span>
+                <div>
+                  <strong>Legitimate / Verified Claim</strong>
+                  <p>Factually realistic, includes proper caveats, standard metrics, and refers to known authentic bodies. No logical fallacies detected.</p>
+                </div>
+              </div>
+              <div class="def-row">
+                <span class="badge stat">Fake Stat</span>
+                <div>
+                  <strong>Mathematical Hallucinations</strong>
+                  <p>Overly precise decimals (e.g. 74.83910%), values over 100% when describing shares, negative metrics where they don't apply, or math that doesn't sum up.</p>
+                </div>
+              </div>
+              <div class="def-row">
+                <span class="badge quote">Fake Quote</span>
+                <div>
+                  <strong>Anachronisms & Misattributions</strong>
+                  <p>Famous people talking about technologies that didn't exist in their era (e.g., Julius Caesar talking about relational database indexes, Steve Jobs on TikTok).</p>
+                </div>
+              </div>
+              <div class="def-row">
+                <span class="badge source">Fake Source</span>
+                <div>
+                  <strong>URL Scepticism & Fake Institutions</strong>
+                  <p>Lookalike domains (e.g. `paypal.com-login-update.xyz`, `nasa.gov.leak-files.net.ru`) or invented departments like the 'Harvard Institute of Absolute Certainty'.</p>
+                </div>
+              </div>
+              <div class="def-row">
+                <span class="badge claim">Misleading Claim</span>
+                <div>
+                  <strong>Exaggerations & Correlation Errors</strong>
+                  <p>Absolute guarantees (100% bug-free for life), absurd multipliers (4,000% speed increases instantly), and false cause-and-effect claims.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controls Tab -->
+          <div id="tab-controls" class="tab-panel">
+            <h3>KEYBOARD SHORTCUTS</h3>
+            <p>Use your keyboard for high-speed verification arcade play:</p>
+            <div class="shortcuts-list">
+              <div class="shortcut-item"><kbd>1</kbd> <span>SAFE</span></div>
+              <div class="shortcut-item"><kbd>2</kbd> <span>FAKE STAT</span></div>
+              <div class="shortcut-item"><kbd>3</kbd> <span>FAKE QUOTE</span></div>
+              <div class="shortcut-item"><kbd>4</kbd> <span>FAKE SOURCE</span></div>
+              <div class="shortcut-item"><kbd>5</kbd> <span>MISLEADING CLAIM</span></div>
+              <div class="shortcut-item"><kbd>Space</kbd> <span>CONTINUE FEEDBACK PANEL</span></div>
+            </div>
+            <div class="handbook-tip">
+              <span class="tip-badge">COMBO MULTIPLIER</span>
+              <p>Maintain your streak! Every 3 consecutive correct answers increments your Score Multiplier (1x &rarr; 1.5x &rarr; 2x &rarr; 3x &rarr; 4x). Missing a card resets the multiplier immediately.</p>
+            </div>
+          </div>
+        </div>
+
+        <button id="rules-close-btn" class="cyber-btn primary">ACKNOWLEDGED</button>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         C. MAIN GAMEPLAY SCREEN
+         ========================================== -->
+    <section id="game-screen" class="screen-view">
+      <!-- HUD / STATUS BAR -->
+      <header class="game-hud">
+        <div class="hud-item mode-indicator-wrapper">
+          <span class="hud-label">SCANNING_MODE</span>
+          <span id="hud-mode-text" class="hud-value glow-cyan">CLASSIC</span>
+        </div>
+
+        <div class="hud-item progress-wrapper">
+          <span class="hud-label">INTAKE_RATIO</span>
+          <span id="hud-progress-text" class="hud-value">01 / 20</span>
+        </div>
+
+        <div class="hud-item timer-wrapper">
+          <span class="hud-label">TIME_REMAINING</span>
+          <div id="timer-gauge-container">
+            <svg class="timer-svg" viewBox="0 0 36 36">
+              <path class="timer-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              <path id="timer-bar" class="timer-fill" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            </svg>
+            <span id="hud-timer-text" class="timer-numeric">15</span>
+          </div>
+        </div>
+
+        <div class="hud-item trust-wrapper">
+          <span class="hud-label" id="trust-label-text">PUBLIC_TRUST</span>
+          <div class="trust-meter-container">
+            <div id="trust-bar-fill" class="trust-fill" style="width: 100%"></div>
+            <div id="lives-container" class="lives-hearts" style="display: none;">
+              <!-- Lives shown as cyber-grid blocks in Survival mode -->
+              <span class="life-block active"></span>
+              <span class="life-block active"></span>
+              <span class="life-block active"></span>
+            </div>
+          </div>
+          <span id="trust-percentage-text" class="trust-percent-val">100%</span>
+        </div>
+
+        <div class="hud-item streak-wrapper">
+          <span class="hud-label">MULTIPLIER</span>
+          <div class="combo-badge-wrapper">
+            <span id="hud-multiplier-text" class="multiplier-val">1.0x</span>
+            <span id="hud-streak-text" class="streak-val">STREAK: 0</span>
+          </div>
+        </div>
+
+        <div class="hud-item score-wrapper">
+          <span class="hud-label">TOTAL_POINTS</span>
+          <span id="hud-score-text" class="hud-value score-glow">000,000</span>
+        </div>
+      </header>
+
+      <!-- CONTENT CARD WORKSPACE -->
+      <div class="card-workspace-container">
+        <!-- Stamp overlays for correctness state -->
+        <div id="card-stamp" class="status-stamp"></div>
+
+        <div id="content-card" class="content-card-body">
+          <div class="card-border-line"></div>
+          <div class="card-meta-bar">
+            <span id="card-id-badge">ID: INCOMING_001</span>
+            <span id="card-difficulty-badge" class="diff-badge easy">EASY</span>
+          </div>
+          <div class="card-glow-mesh"></div>
+          <div class="card-inner-text-container">
+            <p id="card-text-content">
+              Loading stream telemetry. Please authorize scanners...
+            </p>
+          </div>
+          <div class="card-footer-bar">
+            <span>INTAKE TYPE: <span id="card-type-badge">STATISTICS</span></span>
+            <span class="scanning-flicker">ACTIVE_SCANNING...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ANSWER CONTROL DOCK -->
+      <div class="answer-dock-container">
+        <p class="dock-instruction-label">CHOOSE DISCREPANCY CLASSIFICATION ACTION:</p>
+        <div class="answer-buttons-row">
+          <button class="answer-btn btn-safe" data-answer="Safe">
+            <span class="shortcut-num">1</span>
+            <span class="action-text">SAFE</span>
+            <span class="btn-sub">No Hallucination</span>
+          </button>
+          
+          <button class="answer-btn btn-stat" data-answer="Fake Stat">
+            <span class="shortcut-num">2</span>
+            <span class="action-text">FAKE STAT</span>
+            <span class="btn-sub">Bad Percentages/Math</span>
+          </button>
+
+          <button class="answer-btn btn-quote" data-answer="Fake Quote">
+            <span class="shortcut-num">3</span>
+            <span class="action-text">FAKE QUOTE</span>
+            <span class="btn-sub">Anachronistic Attributions</span>
+          </button>
+
+          <button class="answer-btn btn-source" data-answer="Fake Source">
+            <span class="shortcut-num">4</span>
+            <span class="action-text">FAKE SOURCE</span>
+            <span class="btn-sub">Phishing/Fake URL/Entity</span>
+          </button>
+
+          <button class="answer-btn btn-claim" data-answer="Misleading Claim">
+            <span class="shortcut-num">5</span>
+            <span class="action-text">MISLEADING CLAIM</span>
+            <span class="btn-sub">Exaggeration/Correlation</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         D. FEEDBACK DRAWER (SLIDES UP ON CARD)
+         ========================================== -->
+    <section id="feedback-drawer" class="drawer-view">
+      <div class="drawer-header-bar">
+        <h2 id="feedback-result-title" class="feedback-title glow-green">VERIFICATION VERDICT</h2>
+        <div class="feedback-points-earn" id="feedback-points-container">
+          POINTS EARNED: <span id="feedback-points-val" class="highlight-green">+100</span>
+        </div>
+      </div>
+
+      <div class="drawer-content-grid">
+        <div class="explanation-box">
+          <span class="drawer-section-label">EXPLANATION</span>
+          <p id="feedback-explanation-text">
+            Explanation of why this round is Safe or details of the hallucination found.
+          </p>
+        </div>
+
+        <div class="red-flags-box" id="red-flags-container">
+          <span class="drawer-section-label">DETECTED_RED_FLAGS</span>
+          <ul id="feedback-red-flags-list">
+            <!-- Dynamically populated list -->
+          </ul>
+        </div>
+      </div>
+
+      <div class="drawer-footer-bar">
+        <span class="keyboard-help">PRESS <kbd>SPACEBAR</kbd> TO SCAN NEXT INTAKE</span>
+        <button id="next-round-btn" class="cyber-btn primary">CONTINUE</button>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         E. END SCREEN
+         ========================================== -->
+    <section id="end-screen" class="screen-view">
+      <div class="glitch-title-wrapper">
+        <h1 class="logo-title">DECK COMPLETE</h1>
+        <p class="logo-subtitle">VERIFICATION REPORT DEBRIEFING</p>
+      </div>
+
+      <!-- Final Grade Title Badge -->
+      <div class="grade-badge-container">
+        <div class="grade-scanner-line"></div>
+        <span class="grade-label">FINAL CLASSIFICATION RATING:</span>
+        <div id="end-grade-badge" class="badge-grade-text">VERIFICATION WIZARD</div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="end-stats-summary-grid">
+        <div class="stat-card">
+          <span class="stat-card-label">FINAL SCORE</span>
+          <span id="end-score-val" class="stat-card-value glow-cyan">012,300</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card-label">ACCURACY</span>
+          <span id="end-accuracy-val" class="stat-card-value glow-green">85%</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card-label">PEAK COMBO STREAK</span>
+          <span id="end-streak-val" class="stat-card-value glow-yellow">12</span>
+        </div>
+      </div>
+
+      <!-- Category Breakdown Chart -->
+      <div class="terminal-card category-breakdown-card">
+        <div class="terminal-header">
+          <span class="terminal-title">ACCURACY_BY_CLASSIFICATION_CODE.LOG</span>
+        </div>
+        <div class="terminal-body category-chart-body">
+          <div class="category-stat-row">
+            <span class="cat-label badge safe">SAFE</span>
+            <div class="chart-progress-bar"><div id="chart-bar-safe" class="chart-fill bg-safe" style="width: 80%"></div></div>
+            <span id="chart-val-safe" class="cat-ratio">4 / 5</span>
+          </div>
+          <div class="category-stat-row">
+            <span class="cat-label badge stat">FAKE STAT</span>
+            <div class="chart-progress-bar"><div id="chart-bar-stat" class="chart-fill bg-stat" style="width: 60%"></div></div>
+            <span id="chart-val-stat" class="cat-ratio">3 / 5</span>
+          </div>
+          <div class="category-stat-row">
+            <span class="cat-label badge quote">FAKE QUOTE</span>
+            <div class="chart-progress-bar"><div id="chart-bar-quote" class="chart-fill bg-quote" style="width: 100%"></div></div>
+            <span id="chart-val-quote" class="cat-ratio">5 / 5</span>
+          </div>
+          <div class="category-stat-row">
+            <span class="cat-label badge source">FAKE SOURCE</span>
+            <div class="chart-progress-bar"><div id="chart-bar-source" class="chart-fill bg-source" style="width: 20%"></div></div>
+            <span id="chart-val-source" class="cat-ratio">1 / 5</span>
+          </div>
+          <div class="category-stat-row">
+            <span class="cat-label badge claim">MISLEADING CLAIM</span>
+            <div class="chart-progress-bar"><div id="chart-bar-claim" class="chart-fill bg-claim" style="width: 90%"></div></div>
+            <span id="chart-val-claim" class="cat-ratio">4 / 5</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-buttons-container">
+        <button id="retry-game-btn" class="cyber-btn primary">RELOAD CURRENT SCANNERS</button>
+        <button id="back-to-menu-btn" class="cyber-btn secondary">RETURN TO MAIN TERMINAL</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Sound Toggle Script & Module loading -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
